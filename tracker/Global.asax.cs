@@ -1,4 +1,6 @@
-﻿using System;
+﻿//using ServiceStack;
+using ServiceStack.WebHost.Endpoints;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,6 +8,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using tracker.api;
 
 namespace tracker
 {
@@ -18,10 +21,22 @@ namespace tracker
         {
             AreaRegistration.RegisterAllAreas();
 
-            WebApiConfig.Register(GlobalConfiguration.Configuration);
+            //WebApiConfig.Register(GlobalConfiguration.Configuration);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            new TrackerAppHost().Init();
         }
+
+        public class TrackerAppHost : AppHostBase
+        {
+            public TrackerAppHost() : base("Traker web service", typeof(HelloService).Assembly) { }
+            public override void Configure(Funq.Container container)
+            {
+                SetConfig(new EndpointHostConfig { ServiceStackHandlerFactoryPath = "api" });
+                //SetConfig(new HostConfig { HandlerFactoryPath = "api" });
+            }
+        }
+
     }
 }
