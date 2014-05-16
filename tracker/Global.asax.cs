@@ -9,7 +9,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using tracker.api;
-
+using ServiceStack.Redis;
 namespace tracker
 {
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
@@ -35,6 +35,8 @@ namespace tracker
             {
                 SetConfig(new EndpointHostConfig { ServiceStackHandlerFactoryPath = "api" });
                 //SetConfig(new HostConfig { HandlerFactoryPath = "api" });
+                container.Register<IRedisClientsManager>(c => new PooledRedisClientManager());
+                container.Register<IRepository>(c => new Repository(c.Resolve<IRedisClientsManager>()));
             }
         }
 
